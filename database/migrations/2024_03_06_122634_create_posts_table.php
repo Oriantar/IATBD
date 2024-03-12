@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('bedrag', 6, 2); 
             $table->date('starthuur');
             $table->date('eindhuur');
+            $table->string('image')->default('pet.png');
             $table->timestamps();
         });
     }

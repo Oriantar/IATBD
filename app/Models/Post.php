@@ -16,6 +16,7 @@ class Post extends Model
         'bedrag',
         'starthuur',
         'eindhuur',
+        'image',
     ];
 
     public function user(): BelongsTo 

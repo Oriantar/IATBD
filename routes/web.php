@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\ImageUploadController;
-
+use App\Http\Controllers\imageController;
+use App\User;
+use Illuminate\Support\Facades\Input;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,8 +36,6 @@ Route::resource('posts', PostController::class)
     ->middleware(['auth', 'verified']
 );
 
-Route::get('image-upload', [ ImageUploadController::class, 'imageUpload' ])->name('image.upload');
-Route::post('image-upload', [ ImageUploadController::class, 'imageUploadPost' ])->name('image.upload.post');
-
+Route::post('/image', [imageController::class, 'upload'])->name('image');
 
 require __DIR__.'/auth.php';

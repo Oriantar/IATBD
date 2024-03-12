@@ -19,11 +19,26 @@
                 </div>
             </div>
 
+            
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="max-w-xl">
+                    <img class="image rounded-circle" src="{{asset('/storage/images/'.Auth::user()->image)}}" alt="profile_image" style="width: 80px; padding: 10px; margin: 0px; ">
+                    <form action="{{route('image')}}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="image">
+                        <input class="" type="submit" value="Upload">
+                    </form>
+                </div>
+            </div>
+            
+            
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
+
+            
         </div>
     </div>
 </x-app-layout>

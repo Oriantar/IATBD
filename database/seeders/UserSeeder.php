@@ -21,13 +21,19 @@ class UserSeeder extends Seeder
             'name' => Str::random(10),
             'email' => Str::random(10).'@example.com',
             'password' => Hash::make('password'),
-            'isAdmin' => False,
+            'isAdmin' => 0,
         ]);}
         DB::table('users')->insert([
             'name' => 'Melvin',
             'email' => 'melvin@melvin.melvin',
             'password' => Hash::make('melvin'),
-            'isAdmin' => True
+            'isAdmin' => 1,
+        ]);
+        DB::table('users')->insert([
+            'name' => 'timmetje',
+            'email' => 'tim@tim.tim',
+            'password' => Hash::make('tim'),
+            'isAdmin' => 1,
         ]);
 
         
