@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\imageController;
+use App\Http\Controllers\UserController;
 use App\User;
 use Illuminate\Support\Facades\Input;
 /*
@@ -37,5 +38,12 @@ Route::resource('posts', PostController::class)
 );
 
 Route::post('/image', [imageController::class, 'upload'])->name('image');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/block', [UserController::class, 'block'])->name('users.block');
+    Route::get('/users/{user}/admin', [UserController::class, 'admin'])->name('users.admin');
+});
+
 
 require __DIR__.'/auth.php';

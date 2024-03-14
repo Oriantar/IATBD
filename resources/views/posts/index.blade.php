@@ -19,12 +19,17 @@
             >{{ old('message') }}</textarea>
             <input type="text" name="bedrag" placeholder="0.00" class="block w-full border-gray-100 focus:border-indigo-100 focus:ring focus:ring-indigo-50 focus:ring-opacity-50 rounded-md shadow-sm">
             <div class="date-picker flex justify- justify-center space-x-2 my-4">
-                <input type="date" id="starthuur" name="starthuur" placeholder="Start Date" required class="border-gray-300 mx-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm dark:bg-transparent dark:text-white">
+                <input Blocked type="date" id="starthuur" name="starthuur" placeholder="Start Date" required class="border-gray-300 mx-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm dark:bg-transparent dark:text-white">
                 <input type="date" id="eindhuur" name="eindhuur" placeholder="End Date" required class="border-gray-300 mx-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm dark:bg-transparent dark:text-white">
             </div>
-            <div>
-                <input type="file" name="image">
-            </div>    
+            <div>  
+            <select name="species" id="species">
+                @foreach($species as $kind)
+                
+                <option value="{{$kind->kind}}">{{$kind->kind}}</option>
+                @endforeach
+            </select>
+        </div>
             <x-input-error :messages="$errors->get('message')" class="mt-2" />
             <x-primary-button class="mt-4">{{ __('posts') }}</x-primary-button>
         </form>
@@ -46,7 +51,7 @@
                                 <small class="text-sm text-gray-600"> &middot; {{__('edited')}} </small>
                                 @endunless
                             </div>
-                            @if (auth()->user()->isAdmin == 1))
+                            @if (auth()->user()->isAdmin == 1)
                                 <x-dropdown>
                                     <x-slot name="trigger">
                                         <button>
@@ -73,7 +78,10 @@
                         <p class="mt-4 text-lg text-gray-900">{{ $post->message }}</p>
                         <p class="mt-2 text-lg text-gray-900">&euro;{{ number_format($post->bedrag, 2, ',' ,'.')}}</p>
                         <p class="mt-4 text-lg text-gray-900">{{ \Carbon\Carbon::parse($post->starthuur)->format('j F Y') }}&middot;{{ \Carbon\Carbon::parse($post->eindhuur)->format('j F Y') }}</p>
-                        <img src="{{asset('/storage/images/'.$post->image)}}" alt="post picture" style="width: 80px; padding: 10px; margin: 0px; "></span>
+                        <p>{{$post->species}}</p>
+                        @unless(Auth()->user()->id == $post->user_id)
+                        <a href="">ik wil deze</a>
+                        @endunless
                     </div>
                 </div>
             @endforeach
