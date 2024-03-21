@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\imageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AanvraagController;
 use App\User;
 use Illuminate\Support\Facades\Input;
 /*
@@ -43,6 +44,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}/block', [UserController::class, 'block'])->name('users.block');
     Route::get('/users/{user}/admin', [UserController::class, 'admin'])->name('users.admin');
+});
+
+Route::middleware('auth')->group(function (){
+    Route::get('/aanvraag/{post}', [AanvraagController::class, 'store'])->name('aanvraag.store');
 });
 
 

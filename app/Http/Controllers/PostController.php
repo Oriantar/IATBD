@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aanvraag;    
 use App\Models\Post;
 use App\Models\Species;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ class PostController extends Controller
         return view('posts.index', [
             'posts' => Post::with('user')->latest()->get(),
             'species' => Species::All(),
+            'aanvragen' => Aanvraag::All(),
     ]);
     }
 
@@ -48,13 +50,27 @@ class PostController extends Controller
             'bedrag' => 'required|numeric|min:0',
             'starthuur' => 'required|date',
             'eindhuur' => 'required|date',
-            'species' => 'required|string|max:20'
+            'species' => 'required|string|max:20',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $name = time().'.'.$image->extension();
+            $image->storeAs('public/images/posts/', $name);
+        }
 
-        
-        $request->user()->posts()->create($validated);
+        Post::create([
+            'pet' => $request->input('pet'),
+            'message' => $request->input('message'),
+            'bedrag' => $request->input('bedrag'),
+            'starthuur' => $request->input('starthuur'),
+            'eindhuur' => $request->input('eindhuur'),
+            'species' => $request->input('species'),
+            'image' => $name ?? null,
+            'user_id' => Auth()->user()->id,
+        ]);
+        //$request->user()->posts()->create($validated);
 
         return redirect(route('posts.index'));
     }
@@ -92,10 +108,19 @@ class PostController extends Controller
             'bedrag' => 'required|numeric|min:0',
             'starthuur' => 'required|date',
             'eindhuur' => 'required|date',
-            'species' => 'required|string|max:20'
+            'species' => 'required|string|max:20',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);  
         
+        if($request->hasFile('image')){
+            Storage::delete('public/images/posts'.$post->image);
+            $image = $request->file('image');
+            $name = time().'.'.$image->extension();
+            $vaildated['image'] = $name;
+            $image->storeAs('public/images/posts', $name);
+        }
         
+
 
         return redirect(route('posts.index'));
     }
@@ -106,9 +131,9 @@ class PostController extends Controller
     public function destroy(Post $post): RedirectResponse
     {
         $this->authorize('delete', $post);
- 
+        Storage::delete('public/images'.$post->image);
         $post->delete();
- 
+        
         return redirect(route('posts.index'));
     }
 }

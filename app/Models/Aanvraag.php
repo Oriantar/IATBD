@@ -6,27 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Post extends Model
+class Aanvraag extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'pet',
-        'message',
-        'bedrag',
-        'starthuur',
-        'eindhuur',
-        'species',
-        'image',
+        'accepted',
+        'post_id',
         'user_id',
     ];
 
-    public function user(): BelongsTo 
+    public function caretaker(): BelongsTo 
     {
         return $this->belongsTo(User::class);
     }
-    public function aanvraag(): HasMany
+    public function post(): BelongsTo 
     {
-        return $this->hasMany(Aanvraag::class);
+        return $this->belongsTo(Post::class);
     }
 }
