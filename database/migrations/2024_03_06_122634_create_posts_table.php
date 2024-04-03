@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date('starthuur');
             $table->date('eindhuur');
             $table->string('image')->nullable();
+            $table->boolean('isReview')->default(false);
+            $table->string('Review')->nullable();
             $table->timestamps();
         });
     }

@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -26,7 +27,7 @@ class PostController extends Controller
         return view('posts.index', [
             'posts' => Post::with('user')->latest()->get(),
             'species' => Species::All(),
-            'aanvragen' => Aanvraag::All(),
+            'aanvragen' => Aanvraag::where('user_id', Auth()->user()->id)->get(),
     ]);
     }
 
@@ -61,15 +62,8 @@ class PostController extends Controller
         }
 
         Post::create([
-            'pet' => $request->input('pet'),
-            'message' => $request->input('message'),
-            'bedrag' => $request->input('bedrag'),
-            'starthuur' => $request->input('starthuur'),
-            'eindhuur' => $request->input('eindhuur'),
-            'species' => $request->input('species'),
-            'image' => $name ?? null,
             'user_id' => Auth()->user()->id,
-        ]);
+        ] + $validated);
         //$request->user()->posts()->create($validated);
 
         return redirect(route('posts.index'));
