@@ -14,9 +14,10 @@
                 </div>
             </div>
         </div>
+        <h2>jouw posts</h2>
 
-        <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
-            @foreach (auth()->user()->posts->reverse() as $post)
+        @foreach (auth()->user()->posts->reverse() as $post)
+            <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
                 <div class="p-6 flex space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 -scale-x-100" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -61,21 +62,20 @@
                             @endif
                         </div>
                         <p class="mt-4 text-lg text-gray-900">{{ $post->message }}</p>
-                        
+
                         @if (!$post->isReview == 1)
                             @foreach ($aanvragen as $aanvraag)
                                 @if ($aanvraag->post_id == $post->id)
                                     @foreach ($users as $user)
                                         @if ($user->id == $aanvraag->user_id)
                                             <p>{{ $user->name }} wilt aanvragen</p>
-                                            <a href="/aanvraag/{{ $aanvraag->id }}/{{ $post->id }}/edit">ja</a>
+                                            <a href="aanvraag/{{ $aanvraag->id }}/{{ $post->id }}/edit">ja</a>
                                             <a href="aanvraag/{{ $aanvraag->id }}/destroy">nee</a>
                                         @endif
                                     @endforeach
                                 @endif
                             @endforeach
                         @else
-                        
                             @if ($post->Review == null)
                                 <form method="POST" action="{{ url('aanvraag/' . $post->id . '/review') }}"
                                     enctype="multipart/form-data">
@@ -85,12 +85,39 @@
                                     <x-primary-button>verstuur review</x-primary-button>
                                 </form>
                             @else
-                            {{$post->Review}}
+                                {{ $post->Review }}
                             @endif
                         @endif
                     </div>
                 </div>
-            @endforeach
-        </div>
+        @endforeach
+    </div>
+    <h2>jouw aanvragen</h2>
+
+    @foreach ($jouwAanvragen as $aanvraag)
+        @foreach ($aanvraagPosts as $post)
+            @if ($post->isReview == 0)
+                @if ($post->id == $aanvraag->post_id)
+                    <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
+                        <div class="p-6 flex space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 -scale-x-100"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center">
+                                    <div>
+
+                                        <span class="text-gray-800">{{ $post->pet}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endif
+        @endforeach
+    @endforeach
     </div>
 </x-app-layout>

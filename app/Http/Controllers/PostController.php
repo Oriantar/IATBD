@@ -22,10 +22,21 @@ class PostController extends Controller
      */
     public function index(): View
     {
+        if(request('search')){
+            if(request('species') != 'All'){
+                
+                $posts = Post::where('species', 'like','%'.request('species') . '%')->where('pet', 'like', '%'.request('search') . '%')->get();
+                
+            }
+            else{
+            $posts = Post::where('pet','like','%'.request('search') . '%')->get();
+        }}
+        else{
+            $posts = Post::All();
+        }
         
-
         return view('posts.index', [
-            'posts' => Post::with('user')->latest()->get(),
+            'posts' => $posts,
             'species' => Species::All(),
             'aanvragen' => Aanvraag::where('user_id', Auth()->user()->id)->get(),
     ]);
@@ -49,16 +60,17 @@ class PostController extends Controller
             'pet' => 'required|string|max:20',
             'message' => 'required|string|max:255',
             'bedrag' => 'required|numeric|min:0',
-            'starthuur' => 'required|date',
-            'eindhuur' => 'required|date',
+            'starthuur' => 'required|date|before:eindhuur|after:today',
+            'eindhuur' => 'required|date|after:starthuur',
             'species' => 'required|string|max:20',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         if($request->hasFile('image')){
             $image = $request->file('image');
             $name = time().'.'.$image->extension();
             $image->storeAs('public/images/posts/', $name);
+            $validated['image'] = $name;
         }
 
         Post::create([
@@ -100,8 +112,8 @@ class PostController extends Controller
             'pet' => 'required|string|max:20',
             'message' => 'required|string|max:255',
             'bedrag' => 'required|numeric|min:0',
-            'starthuur' => 'required|date',
-            'eindhuur' => 'required|date',
+            'starthuur' => 'required|date|before:eindhuur|after:today',
+            'eindhuur' => 'required|date|after:starthuur',
             'species' => 'required|string|max:20',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);  
@@ -114,6 +126,7 @@ class PostController extends Controller
             $image->storeAs('public/images/posts', $name);
         }
         
+        $post->update($validated);
 
 
         return redirect(route('posts.index'));

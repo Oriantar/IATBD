@@ -4,20 +4,38 @@
             {{ __('Posts') }}
         </h2>
     </x-slot>
+    
     <div class="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
+        <form>
+            <input type="search" class="form-control" placeholder="Find pet here" name="search">
+            <select name="species" id="species">
+                <option value="All">All</option>
+                @foreach ($species as $kind)
+                    <option value="{{ $kind->kind }}">{{ $kind->kind }}</option>
+                @endforeach
+                
+            </select>
+            <x-primary-button class="mt-4">submit</x-primary-button>
+        </form>
+        
         <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
             @csrf
             <textarea name="pet" placeholder="{{ __('What is the name of your pet?') }}"
                 class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">{{ old('pet') }}</textarea>
+                <p>{{$errors->first('pet')}}</p>
             <textarea name="message" placeholder="{{ __('Biography') }}"
                 class="block w-full border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm">{{ old('message') }}</textarea>
+                <p>{{$errors->first('message')}}</p>
             <input type="text" name="bedrag" placeholder="0.00"
                 class="block w-full border-gray-100 focus:border-indigo-100 focus:ring focus:ring-indigo-50 focus:ring-opacity-50 rounded-md shadow-sm">
+                <p>{{$errors->first('bedrag')}}</p>
             <div class="date-picker flex justify- justify-center space-x-2 my-4">
                 <input Blocked type="date" id="starthuur" name="starthuur" placeholder="Start Date" required
                     class="border-gray-300 mx-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm dark:bg-transparent dark:text-white">
                 <input type="date" id="eindhuur" name="eindhuur" placeholder="End Date" required
                     class="border-gray-300 mx-2 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm dark:bg-transparent dark:text-white">
+                    <p>{{$errors->first('starthuur')}}</p>  
+                    <p>{{$errors->first('eindhuur')}}</p>
             </div>
             <div>
                 <select name="species" id="species">
@@ -27,11 +45,15 @@
                 </select>
                 <input type="file" name="image" accept="jpg,png,gif,svg">
             </div>
+            <p>{{$errors->first('image')}}</p>
             <x-input-error :messages="$errors->get('message')" class="mt-2" />
+            
             <x-primary-button class="mt-4">{{ __('posts') }}</x-primary-button>
         </form>
 
+        
         @foreach ($posts as $post)
+            
             @unless ($post->isReview == 1)
                 <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
                     <div class="p-6 flex space-x-2">
@@ -43,10 +65,10 @@
                         <div class="flex-1">
                             <div class="flex justify-between items-center">
                                 <div>
-                                    <span class="text-gray-800">{{ $post->pet }}</span>
+                                    <span class="text-gray-800"><a href="pet/{{$post->id}}/">{{ $post->pet }}</a></span>
                                     <small
                                         class="ml-2 text-sm text-gray-600">{{ $post->created_at->format('j M Y, g:i a') }}</small>
-                                    <span class="text-gray-800">{{ $post->user->name }}</span>
+                                    <span class="text-gray-800"><a href="/user/{{$post->user->id}}">{{ $post->user->name }}</a></span>
                                     <img src="{{ asset('/storage/images/' . $post->user->image) }}"
                                         alt="post users profile picture"
                                         style="width: 80px; padding: 10px; margin: 0px; "></span>
