@@ -42,7 +42,7 @@ class AanvraagController extends Controller
 
     public function review(Request $request, Post $post)
     {
-        $post->Review = $request->Review;
+        $post->Review = $request->Review    ;
         $post->save();
             
             

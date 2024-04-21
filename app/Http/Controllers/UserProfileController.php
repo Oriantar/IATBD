@@ -23,7 +23,7 @@ class UserProfileController extends Controller
 
             $extension = $file->getClientOriginalExtension();
 
-            if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'png') {
+            if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'png' || $extension == 'gif') {
                 $isVideo = 0;
             } elseif ($extension == 'mp4' || $extension == 'mov' || $extension == 'avi' || $extension == 'mkv') {
                 $isVideo = 1;

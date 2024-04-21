@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\PetProfile;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 class PetProfileController extends Controller
 {
@@ -12,7 +13,8 @@ class PetProfileController extends Controller
     {
         $Ppost = Post::where("id", $post->id)->first();
         $images = PetProfile::where("post_id", $Ppost->id)->get();
-        return view("pet.index", ["pet" => $post, "images" => $images]);
+        $user = User::where("id", $Ppost->user_id)->first();
+        return view("pet.index", ["pet" => $post, "images" => $images, 'owner' => $user]);
     }
 
     public function upload(Post $post, Request $request)

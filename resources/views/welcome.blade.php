@@ -17,27 +17,33 @@
 </head>
 
 <body class="antialiased">
-    <div
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
+    
+    <div class="relative flex justify-center items-center min-h-screen bg-center">
+        
+        <img src="{{asset('/storage/images/background.jpg')}}" class="w-full h-full object-cover absolute top-0 left-0 z-0 opacity-50" alt="background image">
+        <div class="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
+        
+        <p class="text-white z-10 font-bold text-2xl lg:text-9xl text-center">PassenOpJeDier.nl</p>
+
         @if (Route::has('login'))
-            <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
+            <div class="fixed top-0     right-0 p-6 text-right z-10">
                 @auth
                     <a href="{{ url('/dashboard') }}"
-                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
+                        class="rounded-md bg-white object-center px-4 py-2 font-semibold text-green-600 ">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}"
-                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log
+                        class="rounded-md bg-white object-center px-4 py-2 font-semibold text-green-600 ">Log
                         in</a>
 
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}"
-                            class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
+                            class="rounded-md bg-white object-center px-4 py-2 font-semibold text-green-600 ">Register</a>
                     @endif
                 @endauth
             </div>
         @endif
-        
     </div>
+
 </body>
 
 </html>

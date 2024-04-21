@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Aanvraag;    
+use App\Models\Aanvraag;
 use App\Models\Post;
 use App\Models\Species;
 use Illuminate\Http\Request;
@@ -22,24 +22,26 @@ class PostController extends Controller
      */
     public function index(): View
     {
-        if(request('search')){
-            if(request('species') != 'All'){
-                
-                $posts = Post::where('species', 'like','%'.request('species') . '%')->where('pet', 'like', '%'.request('search') . '%')->get();
-                
-            }
-            else{
-            $posts = Post::where('pet','like','%'.request('search') . '%')->get();
-        }}
-        else{
+        
+        $bedragFilter = request('bedrag');
+            if (!request('bedrag') > 0)
+                $bedragFilter = 10000000000;
+        if (request('species') != 'All') {
+            $posts = Post::where('species', 'like', '%' . request('species') . '%')->where('pet', 'like', '%' . request('search') . '%')->whereBetween('bedrag', [0, $bedragFilter])->get();
+        } else {
+            $posts = Post::where('pet', 'like', '%' . request('search') . '%')->whereBetween('bedrag', [0, $bedragFilter])->get();
+        }
+        if (empty(request('species'))) {
             $posts = Post::All();
         }
+
+
         
         return view('posts.index', [
-            'posts' => $posts,
+            'posts' => $posts->reverse(),
             'species' => Species::All(),
             'aanvragen' => Aanvraag::where('user_id', Auth()->user()->id)->get(),
-    ]);
+        ]);
     }
 
     /**
@@ -56,6 +58,7 @@ class PostController extends Controller
     public function store(Request $request): RedirectResponse
     {
         
+        
         $validated = $request->validate([
             'pet' => 'required|string|max:20',
             'message' => 'required|string|max:255',
@@ -66,9 +69,9 @@ class PostController extends Controller
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $name = time().'.'.$image->extension();
+            $name = time() . '.' . $image->extension();
             $image->storeAs('public/images/posts/', $name);
             $validated['image'] = $name;
         }
@@ -116,16 +119,15 @@ class PostController extends Controller
             'eindhuur' => 'required|date|after:starthuur',
             'species' => 'required|string|max:20',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
-        ]);  
-        
-        if($request->hasFile('image')){
-            Storage::delete('public/images/posts'.$post->image);
+        ]);
+
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $name = time().'.'.$image->extension();
-            $vaildated['image'] = $name;
-            $image->storeAs('public/images/posts', $name);
+            $name = time() . '.' . $image->extension();
+            $image->storeAs('public/images/posts/', $name);
+            $validated['image'] = $name;
         }
-        
+
         $post->update($validated);
 
 
@@ -138,9 +140,9 @@ class PostController extends Controller
     public function destroy(Post $post): RedirectResponse
     {
         $this->authorize('delete', $post);
-        Storage::delete('public/images'.$post->image);
+        Storage::delete('public/images' . $post->image);
         $post->delete();
-        
+
         return redirect(route('posts.index'));
     }
 }
